@@ -24,7 +24,7 @@ function create() {
 	sprite.anchor.setTo(0.5, 0.5);
 	sprite.angle = 90;
 	sprite.scale.setTo(0.2, 0.2);
-	sprite.animations.add('swim', [0,1], 5, true);
+	sprite.animations.add('swim', [0,1,2,3,4,3,2,1,0], 10, true);
 
 	
 
@@ -35,6 +35,22 @@ function spawnFood(){
 	
 	//var food = game.add.sprite(game.world.randomX, game.world.randomY, 'ball');
 	var food = foods.create(game.world.randomX, game.world.randomY, 'ball');
+	if (food.x < 80)
+	{
+		food.x = 80;
+	}
+	if (food.x > (game.world.width - 80))
+	{
+		food.x = game.world.width - 80;
+	}
+		if (food.y < 80)
+	{
+		food.y = 80;
+	}
+	if (food.y > (game.world.height - 80))
+	{
+		food.y = game.world.height - 80;
+	}
 	//food.enableBody = true;
 	game.physics.arcade.enable(food);
 	total++;
@@ -68,7 +84,7 @@ function update() {
         spawnFood();
     }
 	
-	game.physics.arcade.overlap(sprite, foods, this.collectFood, null, this);
+	game.physics.arcade.overlap(sprite, foods, collectFood);
 
 }
 
@@ -78,6 +94,7 @@ function collectFood(sprite, food) {
 		// Removes the food from the screen
 		food.kill();
 		console.log("cheesecake");
+		total--;
 		//plink.play();
 		//score += 1; //score updating
 		//scoreText.text = 'Score: ' + score;
