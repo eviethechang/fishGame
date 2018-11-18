@@ -4,8 +4,11 @@ var timer = 0;
 
 function preload() {
 
-    game.load.image('ball', 'assets/img/blueOrb.png');
+    game.load.image('ball', 'assets/img/pinkOrb.png');
 	game.load.spritesheet('koi', 'assets/img/KoiSwim.png', 1000, 400);
+	game.load.image('water', 'assets/img/Water.png');
+	game.load.image('duckweed', 'assets/img/Duckweed.png');
+	game.load.image('lillypad', 'assets/img/lillypad.png');
 
 }
 
@@ -13,6 +16,9 @@ var sprite;
 
 function create() {
 
+	var background = game.add.sprite(0, 0, 'water');
+	background.scale.setTo(0.75, 0.75);
+	
 	game.physics.startSystem(Phaser.Physics.ARCADE);
     foods = game.add.group();
 	foods.enableBody = true;
@@ -26,9 +32,37 @@ function create() {
 	sprite.scale.setTo(0.2, 0.2);
 	sprite.animations.add('swim', [0,1,2,3,4,3,2,1,0], 10, true);
 
+	var duckweed = game.add.sprite(20,15, 'duckweed');
+	duckweed.scale.setTo(0.25,0.25);
+	var duckweed2 = game.add.sprite(650,420, 'duckweed');
+	duckweed2.scale.setTo(0.3,0.3);
+	duckweed2.angle = 67;
+	var duckweed3 = game.add.sprite(950, 0, 'duckweed');
+	duckweed3.scale.setTo(0.25, 0.25);
+	duckweed3.angle = 55;
+	var duckweed4 = game.add.sprite(650, 100, 'duckweed');
+	duckweed4.scale.setTo(0.25, 0.25);
+	duckweed4.angle = 25;
+	var duckweed5 = game.add.sprite(840, 225, 'duckweed');
+	duckweed5.scale.setTo(0.2, 0.2);
+	duckweed5.angle = 75;
+	var duckweed6 = game.add.sprite(200, 555, 'duckweed');
+	duckweed6.scale.setTo(0.25, 0.25);
+	duckweed6.angle = 100;
+	var duckweed7 = game.add.sprite(350, 550, 'duckweed');
+	duckweed7.scale.setTo(0.2, 0.2);
+	duckweed7.angle = 118;
 	
-
 	
+	lillypads = game.add.group();
+	var lillypad = lillypads.create(720, 50, 'lillypad');
+	lillypad.scale.setTo(0.4, 0.4);
+	var lillypad2 = lillypads.create(850, 310, 'lillypad');
+	lillypad2.scale.setTo(0.2, 0.2);
+	lillypad2.angle = 275;
+	var lillypad3 = lillypads.create(250, 600, 'lillypad');
+	lillypad3.scale.setTo(0.3, 0.3);
+	lillypad3.angle = 180;
 }
 
 function spawnFood(){
@@ -51,6 +85,7 @@ function spawnFood(){
 	{
 		food.y = game.world.height - 80;
 	}
+	game.physics.arcade.overlap(lillypads, foods, food.kill);
 	//food.enableBody = true;
 	game.physics.arcade.enable(food);
 	total++;
@@ -93,7 +128,7 @@ function update() {
 function collectFood(sprite, food) {
 		// Removes the food from the screen
 		food.kill();
-		console.log("cheesecake");
+		console.log("nom");
 		total--;
 		//plink.play();
 		//score += 1; //score updating
