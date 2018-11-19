@@ -4,6 +4,8 @@ var timer = 0;
 var blop;
 var playerScale = 0.12;
 var playerVelocity = 300;
+var baby = false;
+var nomCount=0;
 
 function preload() {
 
@@ -14,6 +16,7 @@ function preload() {
 	game.load.image('lillypad', 'assets/img/lillypad.png');
 	game.load.audio('blop', 'assets/audio/Blop.wav');
 	game.load.audio('music', 'assets/audio/ZenMusic.mp3');
+	game.load.spritesheet('koibaby', 'assets/img/KoiSwimBaby.png', 1000, 400);
 
 }
 
@@ -101,31 +104,48 @@ function spawnFood(){
 	//food.enableBody = true;
 	game.physics.arcade.enable(food);
 	total++;
-	timer = game.time.now + 1000;
+	timer = game.time.now + 1200;
 	
 }
 
 function update() {
 	
 	sprite.rotation = game.physics.arcade.angleToPointer(sprite);
+	if(baby==true){
+		fishBaby.rotation = game.physics.arcade.angleToPointer(fishBaby);
+	}
+	
     //  only move when you click
     if (game.input.mousePointer.isDown)
     {
         //  400 is the speed it will move towards the mouse
         game.physics.arcade.moveToPointer(sprite, playerVelocity);
 		sprite.animations.play('swim');
+		if(baby == true){
+			game.physics.arcade.moveToPointer(fishBaby, playerVelocity-50);
+			fishBaby.animations.play('babyswim');
+		}
 
         //  if it's overlapping the mouse, don't move any more
         if (Phaser.Rectangle.contains(sprite.body, game.input.x, game.input.y))
         {
             sprite.body.velocity.setTo(0, 0);
 			sprite.animations.play('idle');
+			if(baby == true){
+				fishBaby.body.velocity.setTo(0,0);
+				fishBaby.animations.play('babyidle');
+			}
+			
         }
     }
     else
     {
         sprite.body.velocity.setTo(0, 0);
 		sprite.animations.play('idle');
+		if(baby==true){
+			fishBaby.body.velocity.setTo(0,0);
+			fishBaby.animations.play('babyidle');
+		}
     }
 	
 	if (total < 5 && game.time.now > timer)
@@ -150,7 +170,24 @@ function collectFood(sprite, food) {
 			console.log(playerScale);
 			playerVelocity-=1;
 		}
+		if(playerScale >= 0.3){
+			nomCount++;
+		}
+		if(nomCount>10 && baby == false){
+			//console.log("BABY");
+			fishBaby = game.add.sprite(sprite.x-50, sprite.y-100, 'koibaby');
+			game.physics.arcade.enable(fishBaby);
+			fishBaby.enableBody = true;
+			fishBaby.anchor.setTo(0.5, 0.5);
+			fishBaby.angle = 90;
+			fishBaby.scale.setTo(0.13, 0.13);
+			fishBaby.animations.add('babyswim', [2,3,4,3,2,1,0,1], 10, true);
+			fishBaby.animations.add('babyidle', [2,3,4,3,2,1,0,1], 5, true);
+			baby = true;
+			game.world.bringToTop(lillypads);
+		}
 		blop.play();
+		
 		//score += 1; //score updating
 		//scoreText.text = 'Score: ' + score;
 }
