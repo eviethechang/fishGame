@@ -38,7 +38,7 @@ function create() {
 	sprite = game.add.sprite(game.world.centerX, game.world.centerY, 'koi');
 	game.physics.arcade.enable(sprite);
 	sprite.enableBody = true;
-	//sprite.body.setSize(60, 50, 30, 18);
+	sprite.body.setSize(300, 300,240,0);
 	sprite.anchor.setTo(0.5, 0.5);
 	sprite.angle = 90;
 	sprite.scale.setTo(playerScale, playerScale);
@@ -82,7 +82,6 @@ function create() {
 
 function spawnFood(){
 	
-	//var food = game.add.sprite(game.world.randomX, game.world.randomY, 'ball');
 	var food = foods.create(game.world.randomX, game.world.randomY, 'ball');
 	if (food.x < 80)
 	{
@@ -167,7 +166,7 @@ function collectFood(sprite, food) {
 		total--;
 		if (playerScale < 0.3){
 			playerScale+=0.002;
-			console.log(playerScale);
+			//console.log(playerScale);
 			playerVelocity-=1;
 		}
 		if(playerScale >= 0.3){
