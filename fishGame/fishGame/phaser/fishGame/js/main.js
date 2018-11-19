@@ -1,6 +1,9 @@
 var game = new Phaser.Game(1000, 700, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update });
 var total = 0;
 var timer = 0;
+var blop;
+var playerScale = 0.12;
+var playerVelocity = 300;
 
 function preload() {
 
@@ -9,12 +12,18 @@ function preload() {
 	game.load.image('water', 'assets/img/Water.png');
 	game.load.image('duckweed', 'assets/img/Duckweed.png');
 	game.load.image('lillypad', 'assets/img/lillypad.png');
+	game.load.audio('blop', 'assets/audio/Blop.wav');
+	game.load.audio('music', 'assets/audio/ZenMusic.mp3');
 
 }
 
 var sprite;
 
 function create() {
+	
+	music = game.add.audio('music');
+	music.loop = true;
+	music.play();
 
 	var background = game.add.sprite(0, 0, 'water');
 	background.scale.setTo(0.75, 0.75);
@@ -29,8 +38,9 @@ function create() {
 	//sprite.body.setSize(60, 50, 30, 18);
 	sprite.anchor.setTo(0.5, 0.5);
 	sprite.angle = 90;
-	sprite.scale.setTo(0.2, 0.2);
-	sprite.animations.add('swim', [0,1,2,3,4,3,2,1,0], 10, true);
+	sprite.scale.setTo(playerScale, playerScale);
+	sprite.animations.add('swim', [0,1,2,3,4,3,2,1], 10, true);
+	sprite.animations.add('idle', [0,1,2,3,4,3,2,1], 5, true);
 
 	var duckweed = game.add.sprite(20,15, 'duckweed');
 	duckweed.scale.setTo(0.25,0.25);
@@ -63,6 +73,8 @@ function create() {
 	var lillypad3 = lillypads.create(250, 600, 'lillypad');
 	lillypad3.scale.setTo(0.3, 0.3);
 	lillypad3.angle = 180;
+	
+	blop = game.add.audio('blop');
 }
 
 function spawnFood(){
@@ -100,18 +112,20 @@ function update() {
     if (game.input.mousePointer.isDown)
     {
         //  400 is the speed it will move towards the mouse
-        game.physics.arcade.moveToPointer(sprite, 300);
-		sprite.animations.play('swim')
+        game.physics.arcade.moveToPointer(sprite, playerVelocity);
+		sprite.animations.play('swim');
 
         //  if it's overlapping the mouse, don't move any more
         if (Phaser.Rectangle.contains(sprite.body, game.input.x, game.input.y))
         {
             sprite.body.velocity.setTo(0, 0);
+			sprite.animations.play('idle');
         }
     }
     else
     {
         sprite.body.velocity.setTo(0, 0);
+		sprite.animations.play('idle');
     }
 	
 	if (total < 5 && game.time.now > timer)
@@ -119,6 +133,7 @@ function update() {
         spawnFood();
     }
 	
+	sprite.scale.setTo(playerScale, playerScale);
 	game.physics.arcade.overlap(sprite, foods, collectFood);
 
 }
@@ -130,7 +145,12 @@ function collectFood(sprite, food) {
 		food.kill();
 		console.log("nom");
 		total--;
-		//plink.play();
+		if (playerScale < 0.3){
+			playerScale+=0.002;
+			console.log(playerScale);
+			playerVelocity-=1;
+		}
+		blop.play();
 		//score += 1; //score updating
 		//scoreText.text = 'Score: ' + score;
 }
