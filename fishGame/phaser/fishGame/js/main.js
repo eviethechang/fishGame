@@ -42,6 +42,7 @@ Preloader.prototype = {
 		game.load.image('mainMenu', 'assets/img/MainMenu.png');
 		game.load.spritesheet('Title', 'assets/img/title.png', 1064, 384);
 		game.load.spritesheet('Title2', 'assets/img/title2.png', 1230, 384);
+		game.load.image('controls', 'assets/img/Controls.png');
 		
 	},
 	create: function(){
@@ -86,9 +87,10 @@ MainMenu.prototype = {
 var Controls = function(game){};
 Controls.prototype = {
 	create: function(){
-		//var instructions = this.game.add.sprite(0,0,"menu");
+		var instructions = this.game.add.sprite(0,0,"controls");
 		
-		var playButton = this.game.add.button(400,500,"playButton",this.playGame,this);
+		var playButton = this.game.add.button(625,600,"playButton",this.playGame,this);
+		playButton.scale.setTo(.3,.3);
 		playButton.anchor.setTo(0.5,0.5)
 	},
 	playGame: function(){
